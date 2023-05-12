@@ -65,17 +65,18 @@ def robocopyFolder(sourceFolder, destFolder):
             newDestFolder[i] = dirsFound[i].replace(origem, destino)
 
     # CREATE FOLDER STRUCTURE USING FULL MAIN DEST FOLDER AND ONLY NEW FOLDER
-    # for i in range(len(dirsFound)):
-    #     os.makedirs(os.path.join(destFolder,os.path.basename(dirsFound[i])))
+    for i in range(len(dirsFound)):
+        os.makedirs(os.path.join(destFolder,os.path.basename(dirsFound[i])))
 
     # # COPY FILES NOT OLDER THAN 7 DAYS
-    # for i in range(len(filesFound)):
-    #     shutil.copy2(filesFound[i],destFolder)
+    for i in range(len(filesFound)):
+        shutil.copy2(filesFound[i],destFolder)
 
     print("")
     print("INSIDE FUNCTION")
     print("Scanning: ", sourceFolder)
     print("dirsFound inside Function: ", dirsFound)
+    print("filesFound inside Function: ", filesFound)
     print("dirsFound inside Function tamanho: ", len(dirsFound))
     print("")
     print("newDestFolder inside Function: ", newDestFolder)
@@ -94,192 +95,89 @@ newDestFolder = list(completeItensFound[1])
 print("")
 print('PRIMEIRO LOOP COMEÇA ABAIXO')
 
+######################START LOOPS##################
 #START VARIABLES
 N = 0 #N indicates the sublevel from a folder and it increases as deep as it goes
 
-#first generic loop variables
-dirsFoundLoopN = f"dirsFoundLoop{N}"
-newDestFolderLoopN = f"newDestFolderLoop{N}"
-dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
-newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
+howManyLevels = [0]
 
-#FIRST LOOP
-globals()[dirsFoundLoopN] = []
-globals()[newDestFolderLoopN] = []
-globals()[dirsFoundLoopFixListN] = []
-globals()[newDestFolderLoopFixListN] = []
+while len(howManyLevels)>0:
+    if N == 0:
+        dirsFoundLoopN = f"dirsFoundLoop{N}"
+        newDestFolderLoopN = f"newDestFolderLoop{N}"
+        dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
+        newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
 
-for i in range(len(dirsFound)):
-    print("")
-    print("PRIMEIRO LOOP: Index: ", i)
-    completeItensFound = robocopyFolder(dirsFound[i], newDestFolder[i])
-    if completeItensFound[0]!=[]:
-        globals()[dirsFoundLoopN].append(completeItensFound[0])
-        globals()[newDestFolderLoopN].append(completeItensFound[1])
+        #FIRST LOOP
+        globals()[dirsFoundLoopN] = []
+        globals()[newDestFolderLoopN] = []
+        globals()[dirsFoundLoopFixListN] = []
+        globals()[newDestFolderLoopFixListN] = []
 
-#FIX LIST ARRAY
-for i in range (len(globals()[dirsFoundLoopN])):
-    globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
+        for i in range(len(dirsFound)):
+            print("")
+            print("PRIMEIRO LOOP: Index: ", i)
+            completeItensFound = robocopyFolder(dirsFound[i], newDestFolder[i])
+            if completeItensFound[0]!=[]:
+                globals()[dirsFoundLoopN].append(completeItensFound[0])
+                globals()[newDestFolderLoopN].append(completeItensFound[1])
 
-#create DEST FOLDER FROM FIXED FIRST LIST
-globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
+        #FIX LIST ARRAY
+        for i in range (len(globals()[dirsFoundLoopN])):
+            globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
 
-#FIX NAME for DEST FOLDER
-for i in range (len(globals()[newDestFolderLoopFixListN])):
-    globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
+        #create DEST FOLDER FROM FIXED FIRST LIST
+        globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
 
-#######################SECOND LOOP##################
+        #FIX NAME for DEST FOLDER
+        for i in range (len(globals()[newDestFolderLoopFixListN])):
+            globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
+        
+        N+=1
+    elif N > 0:
 
-N+=1
+        #second generic loop variables
+        dirsFoundLoopN = f"dirsFoundLoop{N}"
+        newDestFolderLoopN = f"newDestFolderLoop{N}"
+        dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
+        newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
 
-#second generic loop variables
-dirsFoundLoopN = f"dirsFoundLoop{N}"
-newDestFolderLoopN = f"newDestFolderLoop{N}"
-dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
-newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
+        #SECOND LOOP
+        globals()[dirsFoundLoopN] = []
+        globals()[newDestFolderLoopN] = []
+        globals()[dirsFoundLoopFixListN] = []
+        globals()[newDestFolderLoopFixListN] = []
 
-#SECOND LOOP
-globals()[dirsFoundLoopN] = []
-globals()[newDestFolderLoopN] = []
-globals()[dirsFoundLoopFixListN] = []
-globals()[newDestFolderLoopFixListN] = []
+        currentSourceLoop = f"dirsFoundLoopFixList{N-1}"
+        currentDestLoop = f"newDestFolderLoopFixList{N-1}"
 
-currentSourceLoop = f"dirsFoundLoopFixList{N-1}"
-currentDestLoop = f"newDestFolderLoopFixList{N-1}"
+        for i in range(len(globals()[currentSourceLoop])):
+            print("")
+            print("PRIMEIRO LOOP: Index: ", i)
+            completeItensFound = robocopyFolder(globals()[currentSourceLoop][i], globals()[currentDestLoop][i])
+            if completeItensFound[0]!=[]:
+                globals()[dirsFoundLoopN].append(completeItensFound[0])
+                globals()[newDestFolderLoopN].append(completeItensFound[1])
 
-for i in range(len(globals()[currentSourceLoop])):
-    print("")
-    print("PRIMEIRO LOOP: Index: ", i)
-    completeItensFound = robocopyFolder(globals()[currentSourceLoop][i], globals()[currentDestLoop][i])
-    if completeItensFound[0]!=[]:
-        globals()[dirsFoundLoopN].append(completeItensFound[0])
-        globals()[newDestFolderLoopN].append(completeItensFound[1])
+        #FIX LIST ARRAY
+        for i in range (len(globals()[dirsFoundLoopN])):
+            globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
 
-#FIX LIST ARRAY
-for i in range (len(globals()[dirsFoundLoopN])):
-    globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
+        #create DEST FOLDER FROM FIXED FIRST LIST
+        globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
 
-#create DEST FOLDER FROM FIXED FIRST LIST
-globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
+        #FIX NAME for DEST FOLDER
+        for i in range (len(globals()[newDestFolderLoopFixListN])):
+            globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
+        
+        N+=1
 
-#FIX NAME for DEST FOLDER
-for i in range (len(globals()[newDestFolderLoopN])):
-    globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
-
-# ########################THIRD LOOP##################
-
-N+=1
-
-#third generic loop variables
-dirsFoundLoopN = f"dirsFoundLoop{N}"
-newDestFolderLoopN = f"newDestFolderLoop{N}"
-dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
-newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
-
-#THIRD LOOP
-globals()[dirsFoundLoopN] = []
-globals()[newDestFolderLoopN] = []
-globals()[dirsFoundLoopFixListN] = []
-globals()[newDestFolderLoopFixListN] = []
-
-currentSourceLoop = f"dirsFoundLoopFixList{N-1}"
-currentDestLoop = f"newDestFolderLoopFixList{N-1}"
-
-for i in range(len(globals()[currentSourceLoop])):
-    print("")
-    print("PRIMEIRO LOOP: Index: ", i)
-    completeItensFound = robocopyFolder(globals()[currentSourceLoop][i], globals()[currentDestLoop][i])
-    if completeItensFound[0]!=[]:
-        globals()[dirsFoundLoopN].append(completeItensFound[0])
-        globals()[newDestFolderLoopN].append(completeItensFound[1])
-
-#FIX LIST ARRAY
-for i in range (len(globals()[dirsFoundLoopN])):
-    globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
-
-#create DEST FOLDER FROM FIXED FIRST LIST
-globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
-
-#FIX NAME for DEST FOLDER
-for i in range (len(globals()[newDestFolderLoopN])):
-    globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
-
-########################FOURTH LOOP##################
-
-N+=1
-
-#FOURTH LOOP
-
-#fourth generic loop variables
-dirsFoundLoopN = f"dirsFoundLoop{N}"
-newDestFolderLoopN = f"newDestFolderLoop{N}"
-dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
-newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
-
-globals()[dirsFoundLoopN] = []
-globals()[newDestFolderLoopN] = []
-globals()[dirsFoundLoopFixListN] = []
-globals()[newDestFolderLoopFixListN] = []
-
-currentSourceLoop = f"dirsFoundLoopFixList{N-1}"
-currentDestLoop = f"newDestFolderLoopFixList{N-1}"
-
-for i in range(len(globals()[currentSourceLoop])):
-    print("")
-    print("PRIMEIRO LOOP: Index: ", i)
-    completeItensFound = robocopyFolder(globals()[currentSourceLoop][i], globals()[currentDestLoop][i])
-    if completeItensFound[0]!=[]:
-        globals()[dirsFoundLoopN].append(completeItensFound[0])
-        globals()[newDestFolderLoopN].append(completeItensFound[1])
-
-#FIX LIST ARRAY
-for i in range (len(globals()[dirsFoundLoopN])):
-    globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
-
-#create DEST FOLDER FROM FIXED FIRST LIST
-globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
-
-#FIX NAME for DEST FOLDER
-for i in range (len(globals()[newDestFolderLoopN])):
-    globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
-
-########################FIFTH LOOP##################
-
-N+=1
-
-#fifth generic loop variables
-dirsFoundLoopN = f"dirsFoundLoop{N}"
-newDestFolderLoopN = f"newDestFolderLoop{N}"
-dirsFoundLoopFixListN = f"dirsFoundLoopFixList{N}"
-newDestFolderLoopFixListN = f"newDestFolderLoopFixList{N}"
-
-#FIFTH LOOP
-globals()[dirsFoundLoopN] = []
-globals()[newDestFolderLoopN] = []
-globals()[dirsFoundLoopFixListN] = []
-globals()[newDestFolderLoopFixListN] = []
-
-currentSourceLoop = f"dirsFoundLoopFixList{N-1}"
-currentDestLoop = f"newDestFolderLoopFixList{N-1}"
-
-for i in range(len(globals()[currentSourceLoop])):
-    print("")
-    print("PRIMEIRO LOOP: Index: ", i)
-    completeItensFound = robocopyFolder(globals()[currentSourceLoop][i], globals()[currentDestLoop][i])
-    if completeItensFound[0]!=[]:
-        globals()[dirsFoundLoopN].append(completeItensFound[0])
-        globals()[newDestFolderLoopN].append(completeItensFound[1])
-
-#FIX LIST ARRAY
-for i in range (len(globals()[dirsFoundLoopN])):
-    globals()[dirsFoundLoopFixListN].extend(globals()[dirsFoundLoopN][i])
-
-#create DEST FOLDER FROM FIXED FIRST LIST
-globals()[newDestFolderLoopFixListN] = list(globals()[dirsFoundLoopFixListN])
-
-#FIX NAME for DEST FOLDER
-for i in range (len(globals()[newDestFolderLoopN])):
-    globals()[newDestFolderLoopFixListN][i] = globals()[dirsFoundLoopFixListN][i].replace(origem, destino)
+    #IS THERE MORE SUBLEVEL DIRECTORIES TO GO THROUGH?
+    if globals()[dirsFoundLoopN]==[]:
+        howManyLevels = []
+    elif N>100:
+        print("Stopping program, there are more than 100 sub-level directories, is that real good?")
+        howManyLevels = []
 
 print("")
 print("FIM")
