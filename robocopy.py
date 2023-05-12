@@ -68,7 +68,7 @@ def robocopyFolder(sourceFolder, destFolder):
     for i in range(len(dirsFound)):
         os.makedirs(os.path.join(destFolder,os.path.basename(dirsFound[i])))
 
-    # # COPY FILES NOT OLDER THAN 7 DAYS
+    # # # COPY FILES NOT OLDER THAN 7 DAYS
     for i in range(len(filesFound)):
         shutil.copy2(filesFound[i],destFolder)
 
@@ -178,6 +178,38 @@ while len(howManyLevels)>0:
     elif N>100:
         print("Stopping program, there are more than 100 sub-level directories, is that real good?")
         howManyLevels = []
+
+#COMPARE SOURCE DEST
+# def list_files(source_dir):
+#     blankParentFolder = os.path.basename(source_dir)
+#     file_list = []
+#     newfile_list = []
+#     for root, dirs, files in os.walk(source_dir):
+#         for name in files:
+#             full_path = os.path.join(root, name)
+#             file_age = time.time() - os.stat(full_path).st_mtime
+#             if file_age < 7 * 24 * 60 * 60:  # 7 days in seconds
+#                 file_list.append(full_path)
+#         for name in dirs:
+#             full_path = os.path.join(root, name)
+#             file_age = time.time() - os.stat(full_path).st_mtime
+#             if file_age < 7 * 24 * 60 * 60:  # 7 days in seconds
+#                 file_list.append(full_path)
+    
+#     newfile_list = list(file_list)
+
+#     for i in range(len(file_list)):
+#             newfile_list[i] = os.path.normpath(file_list[i].replace(blankParentFolder, ""))
+            
+#     return newfile_list
+
+# source = list_files(sourceFolder)
+# dest = list_files(destFolder)
+
+# if source != dest:
+#     print("algo está diferente")
+# else:
+#     print("tudo igual")
 
 print("")
 print("FIM")
