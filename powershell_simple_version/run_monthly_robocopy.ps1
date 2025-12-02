@@ -5,7 +5,8 @@
 #New-Item -ItemType SymbolicLink -Path "C:\Robocopy" -Target "D:\Target Folder\CONFIGURACOES\"
 #My target folder had brazilian portuguese characters, spaces and it was a long path, symlink above made it all happens smoothly
 #Run this before schtasks as admin
-
+#if you want to run first time - right away, after scheduling task with schtasks
+#schtasks /Run /TN "Monthly Robocopy Job"
 $ScriptRoot = "C:\Robocopy"
 # Log file
 $LogFile = Join-Path $ScriptRoot "robocopy_log.txt"
