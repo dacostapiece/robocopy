@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name cp.dacostapiece.com.br;
+
+    location / {
+        proxy_pass http://192.168.0.202:3923;  # IP of your actual webserver
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
